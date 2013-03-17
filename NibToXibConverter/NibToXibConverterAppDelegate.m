@@ -128,16 +128,26 @@
 - (void)frameIbtoolCommandForInputFilePath:(NSURL *)inputFileUrl
 {
 	// obtain outputFileUrl
-	NSString *inputFileLastPathComponent = [inputFileUrl lastPathComponent]; // file name with nib extension obtained
-	NSURL *outputFileUrlWithNibExtension = [self.outputFolderUrl URLByAppendingPathComponent:inputFileLastPathComponent]; // output url framed but with wrong extension
+	NSString *inputFileName = [inputFileUrl lastPathComponent]; // file name with nib extension obtained
+	NSString *inputFileBaseName = [inputFileName stringByDeletingPathExtension];
 	
-	NSURL *outputFileUrlWithoutPathExtension = [outputFileUrlWithNibExtension URLByDeletingPathExtension]; // wrong extension deleted
-	NSURL *outputFileUrlWithXibExtension = [outputFileUrlWithoutPathExtension URLByAppendingPathExtension:@"xib"]; // correct extension added :-)
+	NSString *outputFileName = [inputFileBaseName stringByAppendingPathExtension:@"xib"];
+	
+	// If inputFolderUrl and outputFolderUrl are the same, we convert the nib file in-place.
+	NSURL *outputFileBaseURL;
+	if ([self.outputFolderUrl isEqual:self.inputFolderUrl]) {
+		outputFileBaseURL = [inputFileUrl URLByDeletingLastPathComponent];
+	}
+	else {
+		outputFileBaseURL = self.outputFolderUrl;
+	}
+	
+	NSURL *outputFileURL = [outputFileBaseURL URLByAppendingPathComponent:outputFileName];
 	
 	NSTask *theIBToolCommand = [[NSTask alloc] init];
 	[theIBToolCommand setLaunchPath:@"/Developer/usr/bin/ibtool"];
 	
-	NSArray *argumentsArray = [[NSArray alloc] initWithObjects:[inputFileUrl path],@"--upgrade",@"--write",[outputFileUrlWithXibExtension path],nil];
+	NSArray *argumentsArray = [[NSArray alloc] initWithObjects:[inputFileUrl path],@"--upgrade",@"--write",[outputFileURL path],nil];
 	[theIBToolCommand setArguments:argumentsArray];
 	[argumentsArray release];
 	
