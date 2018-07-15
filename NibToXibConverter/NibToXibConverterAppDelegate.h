@@ -8,20 +8,24 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface NibToXibConverterAppDelegate : NSObject <NSApplicationDelegate> {
-    NSWindow *window;
-	NSURL *inputFolderUrl;
-	NSURL *outputFolderUrl;
-	BOOL converting;
-	NSString *status;
-	NSMutableArray *ibtoolCommandsArray;
-	NSInteger processedFilesCount;
-	NSInteger totalFilesCount;
-	NSInteger leftFilesCount;
+@interface NibToXibConverterAppDelegate : NSObject <NSApplicationDelegate>
+{
+    NSWindow *m_window;
+	NSButton *m_decompileNibsCheckBox;
+	NSURL *m_inputFolderUrl;
+	NSURL *m_outputFolderUrl;
+	BOOL m_converting;
+	NSString *m_status;
+	NSMutableArray *m_toolCommandArray;
+	NSInteger m_processedFilesCount;
+	NSInteger m_totalFilesCount;
+	NSInteger m_leftFilesCount;
 }
 
 @property (assign) IBOutlet NSWindow *window;
-@property (readwrite, retain) NSMutableArray *ibtoolCommandsArray;
+@property (assign) IBOutlet NSButton *decompileNibsCheckBox;
+
+@property (readwrite, retain) NSMutableArray *toolCommandArray;
 @property (readwrite, retain) NSString *status;
 @property (readwrite, retain) NSURL *inputFolderUrl;
 @property (readwrite, retain) NSURL *outputFolderUrl;
@@ -34,4 +38,5 @@
 - (void)chooseInputDirectory;
 - (void)chooseOutputDirectory;
 - (void)clearAll;
+
 @end
